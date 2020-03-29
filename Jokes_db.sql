@@ -27,7 +27,7 @@
 create table IF NOT EXISTS  Users (userId int(11) auto_increment, username varchar(30), upass VARCHAR(30), primary key(userId));
 create table  IF NOT EXISTS Jokes (jokeId varchar(50), userId int(11), joke mediumtext, total_rate_value int(20), num_of_ratings int(20), 
 AvgRating decimal(6,2), primary key(jokeId), foreign key (userId) references Users(userId)); 
-create table IF NOT EXISTS  Comments (commentId int(11) auto_increment, userId int(11), jokeId varchar(50), comment mediumtext, primary key(CommentId), foreign key (userID) references 
+create table IF NOT EXISTS  Comments (commentId int(11) auto_increment, userId int(11), jokeId varchar(50), comment mediumtext, date DATETIME, primary key(CommentId), foreign key (userID) references 
 	Users(userId), foreign key (jokeId) references Jokes(jokeId));
 create table IF NOT EXISTS  Rating (rateId int(11) auto_increment, jokeId varchar(50), userId int(11), rate int(3), primary key(rateId, jokeId, userId), foreign key (jokeId) references 
 	Jokes(jokeId), foreign key (userId) references Users(userId));

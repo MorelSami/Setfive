@@ -60,7 +60,7 @@ class CI_Log {
 	 *
 	 * @var	int
 	 */
-	protected $_file_permissions = 0644;
+	protected $_file_permissions = 777;//0644;
 
 	/**
 	 * Level of logging

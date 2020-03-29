@@ -1,0 +1,10 @@
+
+
+# Cache and logs (CodeIgniter)
+
+/application/cache/*
+/application/logs/*
+!application/cache/.gitkeep
+!application/logs/.gitkeep
+
+

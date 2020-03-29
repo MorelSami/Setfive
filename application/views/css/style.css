@@ -1,0 +1,140 @@
+
+
+#body {
+		margin: 0 15px 0 15px;
+ }
+    
+ h3{
+    	/*margin-left: 10px;*/
+    	text-align: center;
+ }
+
+ #container {
+    width: 99%;
+	margin: auto;
+	margin-top: 3%;
+	border: 1px solid #D0D0D0;
+	box-shadow: 0 0 8px #D0D0D0;
+}
+
+/********* Login Page **********/
+
+ #loginForm{
+   margin-top: 5px;
+   padding: 2%;
+ }
+
+  #loginMsg{
+	width: 60%;
+	margin: auto;
+	padding: 1%;
+	display: "<?php echo (isset($flag) && $flag == 0)? 'block': 'none'; ?>";
+	text-align: center;
+  }
+
+  /********* Home Page **********/
+
+  #greetings{
+  	width: 60%;
+  	margin: auto;
+  	text-align: center;
+  	margin-bottom: 2%;
+  }
+
+  #search_form{
+  	width: 100%;
+  	border-radius: 5px;
+  	border: 1px solid grey;
+  	height: auto;
+  	padding: 1%;
+  }
+
+  #error{
+  	display:none;
+  	color:red;
+  	font-size: 14px;
+  }
+
+  .legend-css{
+    text-align:center; 
+    font-weight:bold;
+  }
+
+  #tJokes{
+  	border-radius: 5px;
+  	padding:1%;
+  	border-left:1px solid;
+  	border-right: 1px solid;
+  }
+
+  #results{
+  	display: block;
+  	width: auto;
+  	max-height: 400px;
+  	overflow-y: auto;
+
+  }
+ /**** Search Page ********/
+
+  #jokes-box{
+  	/*border:1px solid;*/
+  }
+
+/********* view page *******/
+
+  #user-box{
+  	display: block;
+  	width: 99%;
+  	margin: 5px;
+    height: auto;
+    border: 1px solid;
+    border-radius: 5px;
+
+  }
+
+  #jokebox{
+     width: 100%; 
+  }
+
+  #updateJoke{
+  	 width: 100%; 
+  	 padding: 1%;
+  }
+
+  #joke-info{
+  	width: 100%; 
+  	padding: 5%;
+  	display: block;
+  	margin: auto;
+  	border-bottom: 1px solid grey;
+  }
+
+  #joke{
+  	text-align: center;
+    margin: auto;
+    margin-left: 5%;
+  }
+
+  h4#joke-id{
+  }
+
+  /************** comments*********/
+
+  #user-comments{
+
+    width: 100%; 
+  	padding: 5%;
+  	display: block;
+  }
+
+  #user{
+
+  	border-bottom: 1px solid 80808033;
+    padding: 3%;
+
+  }
+
+  a:hover{
+  	cursor: pointer;
+  	text-decoration: none;
+  }

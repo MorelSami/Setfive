@@ -1,13 +1,22 @@
 
-
+<?php 
+  $session_username = $this->session->userdata('username');
+  $session_userId =  $this->session->userdata('userId');
+?>
 <div id="container" class="container-fluid">
-
-   <h3>  <?php echo $login_msg; ?> </h3>
+<div id="header" class="row">
+	<div class="col-11">
+	  <h3>  <?php echo $login_msg; ?> </h3> 
+	</div>
+	<div class="col">
+		<a href="logout"><span id="logout"><i class="fas fa-sign-out-alt"></i> Logout</span></a>
+	</div>
+</div>
 
   <div id="body" class="row">
 	  <div id="jokes-box" class="col-8">
 	  	 <div id="greetings" class="alert alert-success row">
-		   <?php echo 'Hi '.$userInfo['username'].'!'; ?>
+		   <?php echo 'Hi '.$session_username.'!'; ?>
          </div>
 		<div id="search_form" class="row">
             <?php  echo form_open('site/searchJokes', array('id'=>'searchJoke', 'class'=>'col')); ?>
@@ -63,26 +72,42 @@
 	  	<?php  echo form_open("site/viewJoke", array("id"=>"updateJoke", "class"=>"col")); ?>
 
 	      <div id="joke-info" class="row">
+	      	<input type="hidden" id="rateId" name="rateId" value=""/>
 	      	<input type="hidden" id="jokeId" name="jokeId" value=""/>
-	      	<input type="hidden" id="userId" name="userId" value=""/>
-	      	<h4 id="joke-id"> Joke # <span></span></h4>
+	      	<input type="hidden" id="userId" name="userId" value="<?php echo $this->session->userdata('userId');?>"/>
+	      	<h5> Joke # <span id="joke-Id"> </span></h5>
 	      	<div id="joke" class="alert alert-info row"></div><!--joke-->
-	      	<div id="rate" class="row"></div>
+	      	<div id="rate-div" class="form-group row">
+	      	   <label> Rate:  </label> 
+               <div class="col-sm-10">
+               	  <input type="text" id="rate" class="" name="rate" value="" readonly="" /> 
+               </div>
+               <div class="col-sm-10">
+                <span id="startRate"> 1 </span>
+	      		  <input type="range" id="rate-range" class="" name="rate-range" min="1" max="5" value="3"/>
+	      		<span id="endRate">5</span>
+               </div>
+
+	      	</div>
 	      </div><!--joke-info-->
 
 	      <div id="user-comments" class="row">
-	  	    <h4> Comments   <span>#</span></h4>
+	  	    <h5> Comments   #<span id="totalComments"> 0 </span></h5>
 	  	    <div id="comments" class="col">
-	  	    	<div id="user" class="row">
-	  	    		<div id="comment-box" class="col">
-	  	    			<label><img src="<?php echo base_url();?>application/views/img/user_profile.png" alt="profile icon" width="50px"      height="50px"> Username 1 day ago
+	  	    	<div id="user-<?php echo $session_userId; ?>" class="row user">
+	  	    		<div id="comment-0" class="col comment-box">
+	  	    			<label><img src="<?php echo base_url();?>application/views/img/user_profile.png" alt="profile icon" width="50px"      height="50px"> <?php echo $session_username; ?> 
 	  	    			</label></br>
-	  	    			<input type="text" id="comment" name="comment" value=""/></br></br>
-	  	    			<button id="submitComment" type="button"> Submit</button>
-	  	    		</div><!--commnet-box-->
+	  	    			<input type="text" id="comment" name="comment" value=""/> <button id="saveComment" type="button"> comment </button></br></br>
+	  	    			
+	  	    		</div><!--comment-box-->
 	  	    	</div><!--user-->
 	  	    </div><!--comments-->
 	      </div><!--user-comments-->
+
+	      <div class="col">
+	      	<button id="saveUpdatedJoke" type="button"> Save </button>	
+	      </div>
 
 	    </form>	
 
@@ -106,7 +131,7 @@ $("#search").on('click',function(e) {
        var term= $('#key').val();
 	   var type = $("input[name='searchType']:checked").val(); 
 	   var msg = '';
-	   var base_url = '<?php echo base_url(); ?>index.php/'
+	   var base_url = '<?php echo base_url(); ?>index.php/';
 
 	   if(term == ''){
           msg = 'Please enter a search key!';
@@ -143,6 +168,109 @@ $("#search").on('click',function(e) {
 	});
 
 
+//update the rate value field when rate range updated/ loaded
+var rangeValue = $('#rate-range').val();
+$('#rate').val(rangeValue);
+
+$('#rate-range').on('change', function(){ 
+    $('#rate').val(this.value);
+
+});
+
+//save the update joke info for the current user
+ $('#saveUpdatedJoke').on('click', function(){
+
+ 	   
+      var jokeId= $('#jokeId').val();
+      
+      if(jokeId == '')
+      	return console.log('Joke not selected');
+
+ 	   console.log('Joke Update Initiated ... ');
+       var rateId= $('#rateId').val();
+       var jokeId= $('#jokeId').val();
+	   var userId = $('#userId').val(); 
+	   var rate = $('#rate').val();
+	   var base_url = '<?php echo base_url(); ?>index.php/';
+
+
+       $.ajax({
+       	  url: base_url + 'site/updateJokeInfo',
+       	  type:'POST',
+       	  dataType: 'json',
+       	  data: {
+       	  	 rateId: rateId,
+       	  	 jokeId: jokeId,
+       	  	 userId: userId,
+       	  	 rate: rate
+       	  },
+       	  success:function(res, status){
+             
+              console.log('Status :' + status);   
+           
+              if(res.status == 1)
+              	$('#results').html(res.records); //update jokes table
+
+             $('#greetings').html(res.msg);   //alert user with status
+                
+       	  },
+       	  error:function(res, status, error){
+
+       	  	 console.log('error: ')
+       	  	 console.log(status);
+       	  }
+         });
+
+  });
+
+ //user comment specific joke function 
+  $('#comments').on('click', '#saveComment', function(){
+
+
+      var jokeId= $('#jokeId').val();
+      var comment = $('#comment').val();
+      var userId = $('#userId').val(); 
+	  var base_url = '<?php echo base_url(); ?>index.php/';
+	  //var userId = '<?php echo $session_userId; ?>';
+      
+      if(jokeId == '')
+      	return console.log('Joke not selected!');
+      else if(comment == '')
+      	return console.log('Please enter your comment!');
+
+       console.log('Joke Comment Initiated ... ');
+
+       $.ajax({
+       	  url: base_url + 'site/commentJoke',
+       	  type:'POST',
+       	  dataType: 'json',
+       	  data: {
+
+       	  	 jokeId: jokeId,
+       	  	 userId: userId,
+       	  	 comment: comment
+       	  },
+       	  success:function(res, status){
+             
+              console.log('Status :' + status);
+              //console.log(res);
+
+              if(res.status == 1){   
+               $('#totalComments').html(res.numOfComments);
+               $('#comments').html(res.records);
+              }
+                
+       	  },
+       	  error:function(res, status, error){
+
+       	  	 console.log('error: ')
+       	  	 console.log(status);
+       	  }
+        });
+
+  });
+
+
 });
 
 //view a selected joke
@@ -161,9 +289,35 @@ function viewJoke(id){
        	  },
        	  success:function(res, status){
              
-              $('#user-box').css('display', 'block');
-              console.log('Status :' + status);
-              console.log(res);   
+            $('#user-box').css('display', 'block');
+             
+             console.log('Status :' + status);
+             
+             if(res.status == 1){
+                
+                //display selected joke info
+                for( const [key, value] of Object.entries(res.jokeInfo[0])){
+                 
+                  if(key == 'userId')
+                 	continue;
+              	  else if(key == 'joke')
+              	    $('#'+ key).html(value);
+              	  else
+              	    $('#'+ key).val(value);
+               }
+
+              $('span#joke-Id').html($('#jokeId').val());  
+
+               //display all available comments for selected joke
+
+               $('#totalComments').html(res.commentsInfo.count);
+               $('#comments').html(res.commentsInfo.records);
+
+               //notify user about the event
+               $('#greetings').html(res.msg);
+              
+             }
+               
        	  },
        	  error:function(res, status, error){
 

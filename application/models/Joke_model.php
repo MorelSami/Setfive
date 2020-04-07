@@ -18,7 +18,7 @@ class Joke_model extends CI_Model {
 	public function __construct()
 	{
 		parent::__construct();
-		log_message('debug', __METHOD__.' '.__LINE__.' Joke Controller init:'."\n");
+		log_message('debug', __METHOD__.' '.__LINE__.' Joke Model init:'."\n");
 		//log_message('debug', __METHOD__.' '.__LINE__.' SERVER INFO : '.print_r($_SERVER, TRUE)."\n");
 		$this->load->model('User_model', 'User');
 	}
@@ -115,16 +115,16 @@ class Joke_model extends CI_Model {
      * @param $arr; array containing the joke's info
      *  */
     
-    public function insertJokes($arr= array()){
+    public function insertJokes($arr){
         
-        $this->id=$arr['id'];
-        $this->joke = str_replace("'","''",$arr['joke']);
+        $this->id= "'".$arr['id']."'";
+        $this->joke = "'".str_replace("'","''",$arr['joke'])."'";
         $this->avgRate = 0.0;
         $this->totalRateValue = 0;
         $this->numRate = 0;
         
-        $sql= "INSERT INTO  Jokes (jokeId, joke, total_rate_value, num_of_ratings, AvgRating) VALUES (?,?,?,?,?)"; 
-        $query= $this->db->simple_query($sql, array($this->id, $this->joke, $this->totalRateValue, $this->numRate, $this->avgRate));
+        $sql= "INSERT INTO  Jokes (jokeId, joke, total_rate_value, num_of_ratings, AvgRating) VALUES (".$this->id.",".$this->joke.",".$this->totalRateValue.",".$this->numRate.",".$this->avgRate.")"; 
+        $query= $this->db->simple_query($sql);
 
         if(!$query){
               log_message('debug', __METHOD__.' '.__LINE__.' Joke Insert Unsuccesful! >'."\n".print_r($this->db->error(), TRUE)."\n");
@@ -132,6 +132,39 @@ class Joke_model extends CI_Model {
           }
         
     }
+
+    /*
+     * updateJokesRatings; update the Jokes table with the
+     * new updated joke rating info
+     * @param $arr; array containing the all required rating info for the joke table update
+     * 
+     */
+    
+    public function updateJoke($arr){
+
+        //log_message('debug', __METHOD__.' '.__LINE__.' update Data '.print_r($arr, TRUE));  
+        
+        $this->id= "'".$arr['jokeId']."'";
+        $this->avgRate = $arr['avgRate'];
+        $this->totalRateValue = $arr['totalRate'];
+        $this->numRate = $arr['numRate'];
+        
+        $sql= "UPDATE Jokes SET total_rate_value = ".$this->totalRateValue.", num_of_ratings = ".$this->numRate.", AvgRating = ".$this->avgRate." WHERE jokeId = ".$this->id; 
+        $query= $this->db->simple_query($sql);
+
+        $status = 0;
+
+        if(!$query){
+              log_message('debug', __METHOD__.' '.__LINE__.' Joke Update Unsuccesful! >'."\n".print_r($this->db->error(), TRUE)."\n");
+              //die('Datbase Error !!');
+          }
+        else
+          $status = 1;
+
+        return $status;
+        
+    }
+
     
     /*
      * getJokes; fetch all joke from the database
@@ -143,19 +176,19 @@ class Joke_model extends CI_Model {
         
         switch ($option){
             case "Keyword":
-                $sql = "select Jokes.jokeId, Jokes.userId, joke,rate,total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId  = Rating.jokeId where joke like '%".$value."%'";
+                $sql = "select Jokes.jokeId, joke, rateId, rate,total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId  = Rating.jokeId where joke like '%".$value."%'";
                 break;
             case "Id":
-                $sql = "select Jokes.jokeId, Jokes.userId, joke, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where Jokes.jokeId = '".$value."'";
+                $sql = "select Jokes.jokeId, joke,  rateId, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where Jokes.jokeId = '".$value."'";
                 break;
             case "Rating":
-                $sql = "select Jokes.jokeId, Jokes.userId, joke, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where rate= ".$value;
+                $sql = "select Jokes.jokeId, joke, rateId, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where rate= ".$value;
                 break;
             case "AvgRate":
-                $sql = "select Jokes.jokeId, Jokes.userId, joke, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where AvgRating = ".$value;
+                $sql = "select Jokes.jokeId, joke, rateId,  rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId where AvgRating = ".$value;
                 break;
             default:
-                $sql = "select Jokes.jokeId, Jokes.userId, joke, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId";
+                $sql = "select Jokes.jokeId, joke, rateId, rate, total_rate_value, num_of_ratings, AvgRating from Jokes left join Rating on Jokes.jokeId = Rating.jokeId";
               break;
         }
      
@@ -173,6 +206,7 @@ class Joke_model extends CI_Model {
 
         } else {
            $jokes_info['found']= 0;
+           $jokes_info['response']= null;
            $jokes_info['msg']= $count." Record(s) Found !!";
 
         }
@@ -193,7 +227,7 @@ class Joke_model extends CI_Model {
         $flag= false;
         $this->id = $jokeId;
 
-        $sql = "select * from Jokes where jokeId = ?";
+        $sql = "SELECT * from Jokes where jokeId = ?";
         $query = $this->db->query($sql, $this->id);
         $count= $query->num_rows();
         

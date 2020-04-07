@@ -6,7 +6,7 @@
 	<div id="body" class="row">
 
 		<div id="loginMsg" class="alert alert-danger">
-			<p><?php echo isset($login_msg)? $login_msg : '';?></p>
+			<p><?php echo isset($login_msg) ? $login_msg : ''; ?></p>
 		</div>
 
        <?php  echo form_open('site/index', array('id'=>'loginForm', 'class'=>'col-6')); ?>
@@ -20,4 +20,19 @@
     </div>
 
 </div><!--container-->
+
+<script type="text/javascript">
+  
+  $(document).ready(function(){
+
+     var valid = '<?php echo isset($flag) ? $flag : 1;?>';
+     
+      if(valid == 0)
+        $('#loginMsg').css('display', 'block');
+      else
+        $('#loginMsg').css('display', 'none'); 
+
+  });
+
+</script>
 

@@ -57,21 +57,30 @@ class User_model  extends CI_Model
          $query = $this->db->query($sql, array($username, $upass));
          $userInfo = $query->result_array();
 
-         $result['flag']= 1;
          $result['userInfo']= array();
 
          foreach ($userInfo[0] as $key => $value) {
          	$result['userInfo'][$key]= $value;
          }
+
+         //set user session
+         $session_data = array(
+         	  'userId' => $result['userInfo']['userId'],
+              'username' => $result['userInfo']['username'],
+              'logged_in' => 1,
+         );
+
+         $this->session->set_userdata($session_data);
        
          return $result;
-       }
-       else{
-       	 //log_message('debug', __METHOD__.' '.__LINE__.' Users Table Data : '.$count.'=> No Info'."\n");
-       	 $result['flag']= 0;
+        }
+        else{
+
+         $this->session->set_userdata('logged_in', 0);
          $result['userInfo'] = '';
        	 return $result;
-       }
+
+        }
 
 	}
 

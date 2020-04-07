@@ -25,14 +25,34 @@
  }
 
   #loginMsg{
+  	display: none;
 	width: 60%;
 	margin: auto;
 	padding: 1%;
-	display: "<?php echo (isset($flag) && $flag == 0)? 'block': 'none'; ?>";
 	text-align: center;
   }
 
   /********* Home Page **********/
+
+
+ /**** Header **********/
+
+
+ #header{
+ 	width: 100%;
+ 	padding: 1%;
+ 	margin: auto;
+ 	margin-bottom: 5px;
+ }
+
+  #logout{
+  	float:right;
+  	margin-right: 2%;
+  }
+
+
+/************ Body *************/
+
 
   #greetings{
   	width: 60%;
@@ -110,12 +130,37 @@
   }
 
   #joke{
+  	width: 100%;
   	text-align: center;
     margin: auto;
     margin-left: 5%;
   }
 
-  h4#joke-id{
+  #rate-div{
+  	width: 100%;
+  	margin:auto;
+  	padding: 1%;
+  	padding-top:3%; 
+  }
+
+  #rate{
+  	text-align: center;
+  }
+
+  #startRate{
+  	margin-left: 8%;
+  	margin-right: 2%;
+  }
+
+  #endRate{
+  	margin-left: 2%;
+  }
+
+  #rate-range{
+  	margin-top: 2%;
+  }
+
+  span#joke-id{
   }
 
   /************** comments*********/
@@ -127,11 +172,14 @@
   	display: block;
   }
 
-  #user{
+  .user{
 
-  	border-bottom: 1px solid 80808033;
     padding: 3%;
 
+  }
+
+  .comment-box{
+  	border-bottom: 1px solid #80808033;
   }
 
   a:hover{

@@ -43,12 +43,13 @@ class Comment_model extends CI_Model {
 
         //insert into Comments table;
           log_message('debug', __METHOD__.' '.__LINE__.' Joke Comment Insert init');
-          $sql= "INSERT INTO  Comments (jokeId, userId, comment, date) VALUES (".$this->jokeId.", ".$this->userId.", ".$this->comment.", NOW())";
-          $query= $this->db->simple_query($sql);
 
-        if(!$query){
+          $sql= "INSERT INTO  Comments (jokeId, userId, comment, date) VALUES (?,?,?, NOW())";
+          $query= $this->db->query($sql, array($this->jokeId, $this->userId, $this->comment));
+          $row = $query->row_array();
+
+        if(!$row){
               
-
            log_message('debug', __METHOD__.' '.__LINE__.' Joke Comment Error !'."\n".print_r($this->db->error(), TRUE)."\n");
               //die('Database Error !!');
           }
@@ -79,8 +80,8 @@ class Comment_model extends CI_Model {
 
         $this->jokeId= "'".$jokeId."'";
 
-        $sql= "SELECT * from Comments WHERE jokeId = ".$this->jokeId;
-        $query= $this->db->query($sql);  
+        $sql= "SELECT * from Comments WHERE jokeId = ?";
+        $query= $this->db->query($sql, array($this->jokeId));  
         $count = $query->num_rows();
         $result = $query->result_array();
 
@@ -104,8 +105,6 @@ class Comment_model extends CI_Model {
     }
     
 
-
-
      /*
      * getUserComments; fetch all comment saved for a specific joke by the current user
      * @param $jokeId;  Id of the specific joke
@@ -118,8 +117,8 @@ class Comment_model extends CI_Model {
         $this->jokeId= "'".$arr['jokeId']."'";
         $this->userId= $arr['userId'];
 
-        $sql= "SELECT * from Comments WHERE jokeId = ".$this->jokeId." and userId = ".$this->userId;
-        $query= $this->db->query($sql);  
+        $sql= "SELECT * from Comments WHERE jokeId = ? and userId = ?";
+        $query= $this->db->query($sql, array($this->jokeId, $this->userId));  
         $count = $query->num_rows();
         $result = $query->result_array();
 

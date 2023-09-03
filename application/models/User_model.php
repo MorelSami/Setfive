@@ -34,7 +34,7 @@ class User_model  extends CI_Model
 
        $sql = "SELECT username from Users where userId = ?";
        $query = $this->db->query($sql,array($userId));
-       $row = $query->row_array();
+       $row = $query->result_array();
 
        if(isset($row))
           return $row;
@@ -47,7 +47,7 @@ class User_model  extends CI_Model
     
        $sql = "SELECT count(*) as count from Users where username = ? and upass = ?";
        $query = $this->db->query($sql, array($username, $upass));
-       $row = $query->row_array();
+       $row = $query->result_array();
 
        $result = array();
 

@@ -47,19 +47,18 @@ class Rate_model extends CI_Model {
         //insert into Rating table;
         if(empty($this->rateId)){
           log_message('debug', __METHOD__.' '.__LINE__.' Joke Rate Insert option');
-          //$sql= "INSERT INTO  Rating (jokeId, userId, rate) VALUES (?,?,?)";
-          $sql= "INSERT INTO  Rating (jokeId, userId, rate) VALUES (".$this->jokeId.", ".$this->userId.", ".$this->rate.")";
-          $query= $this->db->simple_query($sql);
+          $sql= "INSERT INTO  Rating (jokeId, userId, rate) VALUES (?,?,?)";
+          $query = $this->db->query($sql, array($this->jokeId, $this->userId, $this->rate));
+          $row = $query->result_array();
         }
         else{
           log_message('debug', __METHOD__.' '.__LINE__.' Joke Rate Update option');
-          $sql= "UPDATE Rating  SET rate= ".$this->rate." WHERE rateId = ".$this->rateId. " and jokeId = ".$this->jokeId." and userId = ".$this->userId;
-          $query= $this->db->simple_query($sql);
+          $sql= "UPDATE Rating  SET rate= ? WHERE rateId = ? and jokeId = ? and userId = ?";
+          $query = $this->db->query($sql, array($this->rate, $this->rateId, $this->jokeId, $this->userId));
+          $row= $query->result_array();
         } 
 
-        if(!$query){
-              
-
+        if(!$row){
            log_message('debug', __METHOD__.' '.__LINE__.' Joke Rate Insert/Update Unsuccesful!'."\n".print_r($this->db->error(), TRUE)."\n");
               //die('Database Error !!');
           }
@@ -73,17 +72,17 @@ class Rate_model extends CI_Model {
             $this->rateId = $this->db->insert_id();  //return the newly generated rateId 
 
           $sql= "SELECT count(*) as num0fRatings, SUM(rate) as totalRateValue, jokeId from Rating 
-                 WHERE rateId = ".$this->rateId." and jokeId = ".$this->jokeId." GROUP BY jokeId"; 
-          $query= $this->db->simple_query($sql);
-          $query2 = $this->db->query($sql);
+                 WHERE rateId = ? and jokeId = ? GROUP BY jokeId"; 
+          $query = $this->db->query($sql, array($this->rateId, $this->jokeId));
+          $row2 = $query->result_array();
 
-          if(!$query){
+          if(!$row2){
 
              log_message('debug', __METHOD__.' '.__LINE__.' Other Calculated Ratings!'."\n".print_r($this->db->error(), TRUE)."\n");
 
           }else{
 
-             $result = $query2->row_array();
+             $result = $row2;
              //log_message('debug', __METHOD__.' '.__LINE__.' Other Ratings : '.print_r($result, TRUE)."\n");
 
              if(isset($result)){

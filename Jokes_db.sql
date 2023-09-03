@@ -36,7 +36,7 @@ commit;
 /*
  * parse in raw data into tables for testing
  */
-Insert into Users(username, upass) values('mksami237@gmail.com', 'smorel237'); 
+Insert into Users(username, upass) values('mksami237@gmail.com', '******'); 
 commit;
 
 /*Insert into Rating(jokeId,userId,rate) values ("0189hNRf2g", 1, 3);

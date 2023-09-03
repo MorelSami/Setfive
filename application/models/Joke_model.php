@@ -123,10 +123,11 @@ class Joke_model extends CI_Model {
         $this->totalRateValue = 0;
         $this->numRate = 0;
         
-        $sql= "INSERT INTO  Jokes (jokeId, joke, total_rate_value, num_of_ratings, AvgRating) VALUES (".$this->id.",".$this->joke.",".$this->totalRateValue.",".$this->numRate.",".$this->avgRate.")"; 
-        $query= $this->db->simple_query($sql);
+        $sql= "INSERT INTO  Jokes (jokeId, joke, total_rate_value, num_of_ratings, AvgRating) VALUES (?,?,?,?,?)"; 
+        $query= $this->db->query($sql, array($this->id, $this->joke, $this->totalRateValue, $this->numRate, $this->avgRate));
+        $row = $query->result_array();
 
-        if(!$query){
+        if(!$row){
               log_message('debug', __METHOD__.' '.__LINE__.' Joke Insert Unsuccesful! >'."\n".print_r($this->db->error(), TRUE)."\n");
               die('Datbase Error !!');
           }
@@ -149,12 +150,13 @@ class Joke_model extends CI_Model {
         $this->totalRateValue = $arr['totalRate'];
         $this->numRate = $arr['numRate'];
         
-        $sql= "UPDATE Jokes SET total_rate_value = ".$this->totalRateValue.", num_of_ratings = ".$this->numRate.", AvgRating = ".$this->avgRate." WHERE jokeId = ".$this->id; 
-        $query= $this->db->simple_query($sql);
+        $sql= "UPDATE Jokes SET total_rate_value = ?, num_of_ratings = ?, AvgRating = ? WHERE jokeId = ?"; 
+        $query= $this->db->query($sql, array($this->totalRateValue, $this->numRate, $this->avgRate, $this->id));
+        $row = $query->result_array();
 
         $status = 0;
 
-        if(!$query){
+        if(!$row){
               log_message('debug', __METHOD__.' '.__LINE__.' Joke Update Unsuccesful! >'."\n".print_r($this->db->error(), TRUE)."\n");
               //die('Datbase Error !!');
           }
